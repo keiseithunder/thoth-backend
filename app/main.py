@@ -9,7 +9,7 @@ class Tweet(BaseModel):
     text: str
 
 class Response(BaseModel):
-    "class": str
+    class_label: str
 
 app = FastAPI()
 
@@ -27,6 +27,6 @@ async def version():
 @app.post("/predict",response_model=Response)
 async def predict(tweet: Tweet):
     if Model.getInstance() != None:
-      return {"class" : Model.predict(tweet.text)[0]}
+      return {"class_label" : Model.predict(tweet.text)[0]}
     else:
       raise HTTPException(status_code=500, detail="Internal Server Error")
