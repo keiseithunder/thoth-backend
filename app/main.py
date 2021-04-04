@@ -1,8 +1,9 @@
 from typing import Optional
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from model import Model
+from tweepyHelper import TweepyHelper
 
 
 class Tweet(BaseModel):
@@ -27,6 +28,18 @@ async def version():
 @app.post("/predict",response_model=Response)
 async def predict(tweet: Tweet):
     if Model.getInstance() != None:
-      return {"class_label" : Model.predict(tweet.text)[0]}
+      return {"class_label" : Model.predict([tweet.text])[0]}
+    else:
+      raise HTTPException(status_code=500, detail="Internal Server Error")
+
+@app.get("/feed")
+async def feed(amount: int):
+    if TweepyHelper.getInstance() != None:
+      tweets = TweepyHelper.fetchTweet(amount)
+      reslut = list(map(lambda x : x['full_text'],tweets))
+      print(reslut)
+      #print(predict_result)
+      #print(tweets[0].keys())
+      return {"feed":Model.predict(reslut)}
     else:
       raise HTTPException(status_code=500, detail="Internal Server Error")

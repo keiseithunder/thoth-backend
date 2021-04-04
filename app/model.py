@@ -23,6 +23,6 @@ class Model:
 
     @staticmethod
     def predict(text):
-      transform = Model.__tfidfTransformer.transform([text])
+      transform = Model.__tfidfTransformer.transform(text)
       return Model.__model.predict(transform)
 
