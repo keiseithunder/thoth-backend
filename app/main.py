@@ -34,7 +34,6 @@ async def version():
 
 @app.post("/predict",response_model=Response)
 async def predict(tweet: Tweet):
-
     try :
       return {"class_label" : Model.predict([tweet.text])[0]}
     except:
@@ -42,6 +41,8 @@ async def predict(tweet: Tweet):
 
 @app.get("/feed")
 async def feed(amount: int):
+    if(amount > 30):
+      raise HTTPException(status_code=400, detail="Number of tweet exceed the limit")
     try:
       TweepyHelper.getInstance()
       tweets = TweepyHelper.fetchTweet(amount)
