@@ -41,8 +41,8 @@ async def predict(tweet: Tweet):
 
 @app.get("/feed")
 async def feed(amount: int):
-    if(amount > 30):
-      raise HTTPException(status_code=400, detail="Number of tweet exceed the limit")
+    if amount > 30 or amount < 1:
+      raise HTTPException(status_code=400, detail="Number of tweet is not valid")
     try:
       TweepyHelper.getInstance()
       tweets = TweepyHelper.fetchTweet(amount)
